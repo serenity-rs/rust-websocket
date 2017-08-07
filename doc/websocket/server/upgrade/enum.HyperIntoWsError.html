@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `HyperIntoWsError` enum in crate `websocket`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, HyperIntoWsError">
+
+    <title>websocket::server::upgrade::HyperIntoWsError - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc enum">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Enum HyperIntoWsError</p><div class="block items"><ul><li><a href="#variants">Variants</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../../index.html'>websocket</a>::<wbr><a href='../index.html'>server</a>::<wbr><a href='index.html'>upgrade</a></p><script>window.sidebarCurrent = {name: 'HyperIntoWsError', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../../index.html'>websocket</a>::<wbr><a href='../index.html'>server</a>::<wbr><a href='index.html'>upgrade</a>::<wbr><a class="enum" href=''>HyperIntoWsError</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#156-177' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum HyperIntoWsError {
+    MethodNotGet,
+    UnsupportedHttpVersion,
+    UnsupportedWebsocketVersion,
+    NoSecWsKeyHeader,
+    NoWsUpgradeHeader,
+    NoUpgradeHeader,
+    NoWsConnectionHeader,
+    NoConnectionHeader,
+    Io(<a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>),
+    Parsing(<a class="enum" href="../../../hyper/error/enum.Error.html" title="enum hyper::error::Error">Error</a>),
+}</pre><div class='docblock'><p>Errors that can occur when one tries to upgrade a connection to a
+websocket connection.</p>
+</div><h2 id='variants' class='variants section-header'>
+                   <a href='#variants'>Variants</a></h2>
+<span id='variant.MethodNotGet' class='variant'><span id='MethodNotGet.v' class='invisible'><code>MethodNotGet</code></span></span><div class='docblock'><p>The HTTP method in a valid websocket upgrade request must be GET</p>
+</div><span id='variant.UnsupportedHttpVersion' class='variant'><span id='UnsupportedHttpVersion.v' class='invisible'><code>UnsupportedHttpVersion</code></span></span><div class='docblock'><p>Currently HTTP 2 is not supported</p>
+</div><span id='variant.UnsupportedWebsocketVersion' class='variant'><span id='UnsupportedWebsocketVersion.v' class='invisible'><code>UnsupportedWebsocketVersion</code></span></span><div class='docblock'><p>Currently only WebSocket13 is supported (RFC6455)</p>
+</div><span id='variant.NoSecWsKeyHeader' class='variant'><span id='NoSecWsKeyHeader.v' class='invisible'><code>NoSecWsKeyHeader</code></span></span><div class='docblock'><p>A websocket upgrade request must contain a key</p>
+</div><span id='variant.NoWsUpgradeHeader' class='variant'><span id='NoWsUpgradeHeader.v' class='invisible'><code>NoWsUpgradeHeader</code></span></span><div class='docblock'><p>A websocket upgrade request must ask to upgrade to a <code>websocket</code></p>
+</div><span id='variant.NoUpgradeHeader' class='variant'><span id='NoUpgradeHeader.v' class='invisible'><code>NoUpgradeHeader</code></span></span><div class='docblock'><p>A websocket upgrade request must contain an <code>Upgrade</code> header</p>
+</div><span id='variant.NoWsConnectionHeader' class='variant'><span id='NoWsConnectionHeader.v' class='invisible'><code>NoWsConnectionHeader</code></span></span><div class='docblock'><p>A websocket upgrade request&#39;s <code>Connection</code> header must be <code>Upgrade</code></p>
+</div><span id='variant.NoConnectionHeader' class='variant'><span id='NoConnectionHeader.v' class='invisible'><code>NoConnectionHeader</code></span></span><div class='docblock'><p>A websocket upgrade request must contain a <code>Connection</code> header</p>
+</div><span id='variant.Io' class='variant'><span id='Io.v' class='invisible'><code>Io(<a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>)</code></span></span><div class='docblock'><p>IO error from reading the underlying socket</p>
+</div><span id='variant.Parsing' class='variant'><span id='Parsing.v' class='invisible'><code>Parsing(<a class="enum" href="../../../hyper/error/enum.Error.html" title="enum hyper::error::Error">Error</a>)</code></span></span><div class='docblock'><p>Error while parsing an incoming request</p>
+</div>
+            <h2 id='implementations' class='section-header'>
+              <a href='#implementations'>Trait Implementations</a>
+            </h2>
+        <h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="enum" href="../../../websocket/server/upgrade/enum.HyperIntoWsError.html" title="enum websocket::server::upgrade::HyperIntoWsError">HyperIntoWsError</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#155' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#155' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html" title="trait core::fmt::Display">Display</a> for <a class="enum" href="../../../websocket/server/upgrade/enum.HyperIntoWsError.html" title="enum websocket::server::upgrade::HyperIntoWsError">HyperIntoWsError</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#179-183' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt-1' class="method"><span id='fmt.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, fmt: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Error.html" title="struct core::fmt::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#180-182' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html" title="trait std::error::Error">Error</a> for <a class="enum" href="../../../websocket/server/upgrade/enum.HyperIntoWsError.html" title="enum websocket::server::upgrade::HyperIntoWsError">HyperIntoWsError</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#185-209' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.description' class="method"><span id='description.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description' class='fnname'>description</a>(&amp;self) -&gt; &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#186-200' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>A short description of the error. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description">Read more</a></p>
+</div><h4 id='method.cause' class="method"><span id='cause.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause' class='fnname'>cause</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html" title="trait std::error::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#202-208' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>The lower-level cause of this error, if any. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>&gt; for <a class="enum" href="../../../websocket/server/upgrade/enum.HyperIntoWsError.html" title="enum websocket::server::upgrade::HyperIntoWsError">HyperIntoWsError</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#211-215' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from' class="method"><span id='from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(err: <a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#212-214' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="enum" href="../../../hyper/error/enum.Error.html" title="enum hyper::error::Error">Error</a>&gt; for <a class="enum" href="../../../websocket/server/upgrade/enum.HyperIntoWsError.html" title="enum websocket::server::upgrade::HyperIntoWsError">HyperIntoWsError</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#217-221' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-1' class="method"><span id='from.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(err: <a class="enum" href="../../../hyper/error/enum.Error.html" title="enum hyper::error::Error">Error</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#218-220' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="enum" href="../../../websocket/codec/http/enum.HttpCodecError.html" title="enum websocket::codec::http::HttpCodecError">HttpCodecError</a>&gt; for <a class="enum" href="../../../websocket/server/upgrade/enum.HyperIntoWsError.html" title="enum websocket::server::upgrade::HyperIntoWsError">HyperIntoWsError</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#224-231' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-2' class="method"><span id='from.v-2' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(src: <a class="enum" href="../../../websocket/codec/http/enum.HttpCodecError.html" title="enum websocket::codec::http::HttpCodecError">HttpCodecError</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#225-230' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "websocket";
+    </script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

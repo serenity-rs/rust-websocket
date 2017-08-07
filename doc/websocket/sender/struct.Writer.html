@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Writer` struct in crate `websocket`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Writer">
+
+    <title>websocket::sender::Writer - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct Writer</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li></ul></div><p class='location'><a href='../index.html'>websocket</a>::<wbr><a href='index.html'>sender</a></p><script>window.sidebarCurrent = {name: 'Writer', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>websocket</a>::<wbr><a href='index.html'>sender</a>::<wbr><a class="struct" href=''>Writer</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/websocket/sender.rs.html#16-21' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Writer&lt;W&gt; {
+    pub stream: W,
+    pub sender: <a class="struct" href="../../websocket/sender/struct.Sender.html" title="struct websocket::sender::Sender">Sender</a>,
+}</pre><div class='docblock'><p>A writer that bundles a stream with a serializer to send the messages.
+This is used in the client&#39;s <code>.split()</code> function as the writing component.</p>
+
+<p>It can also be useful to use a websocket connection without a handshake.</p>
+</div><h2 id='fields' class='fields section-header'>
+                       <a href='#fields'>Fields</a></h2><span id='structfield.stream' class="structfield">
+                           <span id='stream.v' class='invisible'>
+                           <code>stream: W</code>
+                           </span></span><div class='docblock'><p>The stream that websocket messages will be written to</p>
+</div><span id='structfield.sender' class="structfield">
+                           <span id='sender.v' class='invisible'>
+                           <code>sender: <a class="struct" href="../../websocket/sender/struct.Sender.html" title="struct websocket::sender::Sender">Sender</a></code>
+                           </span></span><div class='docblock'><p>The serializer that will be used to serialize the messages</p>
+</div>
+                    <h2 id='methods' class='section-header'>
+                      <a href='#methods'>Methods</a>
+                    </h2>
+                <h3 class='impl'><span class='in-band'><code>impl&lt;W&gt; <a class="struct" href="../../websocket/sender/struct.Writer.html" title="struct websocket::sender::Writer">Writer</a>&lt;W&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;W: <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/sender.rs.html#23-40' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.send_dataframe' class="method"><span id='send_dataframe.v' class='invisible'><code>fn <a href='#method.send_dataframe' class='fnname'>send_dataframe</a>&lt;D&gt;(&amp;mut self, dataframe: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>D) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;D: <a class="trait" href="../../websocket/ws/dataframe/trait.DataFrame.html" title="trait websocket::ws::dataframe::DataFrame">DataFrame</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;W: <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/sender.rs.html#27-32' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Sends a single data frame to the remote endpoint.</p>
+</div><h4 id='method.send_message' class="method"><span id='send_message.v' class='invisible'><code>fn <a href='#method.send_message' class='fnname'>send_message</a>&lt;M&gt;(&amp;mut self, message: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>M) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;M: <a class="trait" href="../../websocket/ws/message/trait.Message.html" title="trait websocket::ws::message::Message">Message</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/sender.rs.html#35-39' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Sends a single message to the remote endpoint.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;S&gt; <a class="struct" href="../../websocket/sender/struct.Writer.html" title="struct websocket::sender::Writer">Writer</a>&lt;S&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../../websocket/stream/sync/trait.AsTcpStream.html" title="trait websocket::stream::sync::AsTcpStream">AsTcpStream</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/sender.rs.html#42-56' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.shutdown' class="method"><span id='shutdown.v' class='invisible'><code>fn <a href='#method.shutdown' class='fnname'>shutdown</a>(&amp;self) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/std/io/error/type.Result.html" title="type std::io::error::Result">IoResult</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/sender.rs.html#47-49' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Closes the sender side of the connection, will cause all pending and future IO to
+return immediately with an appropriate value.</p>
+</div><h4 id='method.shutdown_all' class="method"><span id='shutdown_all.v' class='invisible'><code>fn <a href='#method.shutdown_all' class='fnname'>shutdown_all</a>(&amp;self) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/std/io/error/type.Result.html" title="type std::io::error::Result">IoResult</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/sender.rs.html#53-55' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Shuts down both Sender and Receiver, will cause all pending and future IO to
+return immediately with an appropriate value.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "websocket";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

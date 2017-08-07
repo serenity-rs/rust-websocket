@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `RequestStreamPair` struct in crate `websocket`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, RequestStreamPair">
+
+    <title>websocket::server::upgrade::sync::RequestStreamPair - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct RequestStreamPair</p><div class="block items"><ul><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../../../index.html'>websocket</a>::<wbr><a href='../../index.html'>server</a>::<wbr><a href='../index.html'>upgrade</a>::<wbr><a href='index.html'>sync</a></p><script>window.sidebarCurrent = {name: 'RequestStreamPair', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../../index.html'>websocket</a>::<wbr><a href='../../index.html'>server</a>::<wbr><a href='../index.html'>upgrade</a>::<wbr><a href='index.html'>sync</a>::<wbr><a class="struct" href=''>RequestStreamPair</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../../../src/websocket/server/upgrade/sync.rs.html#38' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct RequestStreamPair&lt;S:&nbsp;<a class="trait" href="../../../../websocket/stream/trait.Stream.html" title="trait websocket::stream::Stream">Stream</a>&gt;(pub S, pub <a class="type" href="../../../../websocket/server/upgrade/type.Request.html" title="type websocket::server::upgrade::Request">Request</a>);</pre><div class='docblock'><p>If you have your requests separate from your stream you can use this struct
+to upgrade the connection based on the request given
+(the request should be a handshake).</p>
+</div>
+            <h2 id='implementations' class='section-header'>
+              <a href='#implementations'>Trait Implementations</a>
+            </h2>
+        <h3 class='impl'><span class='in-band'><code>impl&lt;S&gt; <a class="trait" href="../../../../websocket/server/upgrade/sync/trait.IntoWs.html" title="trait websocket::server::upgrade::sync::IntoWs">IntoWs</a> for <a class="struct" href="../../../../websocket/server/upgrade/sync/struct.RequestStreamPair.html" title="struct websocket::server::upgrade::sync::RequestStreamPair">RequestStreamPair</a>&lt;S&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../../../../websocket/stream/trait.Stream.html" title="trait websocket::stream::Stream">Stream</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/websocket/server/upgrade/sync.rs.html#192-211' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='associatedtype.Stream' class="type"><span id='Stream.t' class='invisible'><code>type <a href='../../../../websocket/server/upgrade/sync/trait.IntoWs.html#associatedtype.Stream' class="type">Stream</a> = S</code></span></h4>
+<div class='docblock'><p>The type of stream this upgrade process is working with (TcpStream, etc.)</p>
+</div><h4 id='associatedtype.Error' class="type"><span id='Error.t' class='invisible'><code>type <a href='../../../../websocket/server/upgrade/sync/trait.IntoWs.html#associatedtype.Error' class="type">Error</a> = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>S, <a class="type" href="../../../../websocket/server/upgrade/type.Request.html" title="type websocket::server::upgrade::Request">Request</a>, <a class="enum" href="../../../../websocket/server/upgrade/enum.HyperIntoWsError.html" title="enum websocket::server::upgrade::HyperIntoWsError">HyperIntoWsError</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a></code></span></h4>
+<div class='docblock'><p>An error value in case the stream is not asking for a websocket connection or something went wrong. It is common to also include the stream here. <a href="../../../../websocket/server/upgrade/sync/trait.IntoWs.html#associatedtype.Error">Read more</a></p>
+</div><h4 id='method.into_ws' class="method"><span id='into_ws.v' class='invisible'><code>fn <a href='../../../../websocket/server/upgrade/sync/trait.IntoWs.html#tymethod.into_ws' class='fnname'>into_ws</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="type" href="../../../../websocket/server/upgrade/sync/type.Upgrade.html" title="type websocket::server::upgrade::sync::Upgrade">Upgrade</a>&lt;Self::<a class="type" href="../../../../websocket/server/upgrade/sync/trait.IntoWs.html#associatedtype.Stream" title="type websocket::server::upgrade::sync::IntoWs::Stream">Stream</a>&gt;, Self::<a class="type" href="../../../../websocket/server/upgrade/sync/trait.IntoWs.html#associatedtype.Error" title="type websocket::server::upgrade::sync::IntoWs::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/websocket/server/upgrade/sync.rs.html#198-210' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Attempt to parse the start of a Websocket handshake, later with the  returned <code>WsUpgrade</code> struct, call <code>accept</code> to start a websocket client, and <code>reject</code> to send a handshake rejection response. <a href="../../../../websocket/server/upgrade/sync/trait.IntoWs.html#tymethod.into_ws">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../../";
+        window.currentCrate = "websocket";
+    </script>
+    <script src="../../../../main.js"></script>
+    <script defer src="../../../../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Receiver` struct in crate `websocket`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Receiver">
+
+    <title>websocket::receiver::Receiver - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct Receiver</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>websocket</a>::<wbr><a href='index.html'>receiver</a></p><script>window.sidebarCurrent = {name: 'Receiver', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>websocket</a>::<wbr><a href='index.html'>receiver</a>::<wbr><a class="struct" href=''>Receiver</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/websocket/receiver.rs.html#73-76' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Receiver { /* fields omitted */ }</pre><div class='docblock'><p>A Receiver that wraps a Reader and provides a default implementation using
+DataFrames and Messages.</p>
+</div>
+                    <h2 id='methods' class='section-header'>
+                      <a href='#methods'>Methods</a>
+                    </h2>
+                <h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../../websocket/receiver/struct.Receiver.html" title="struct websocket::receiver::Receiver">Receiver</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/receiver.rs.html#78-86' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(mask: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; <a class="struct" href="../../websocket/receiver/struct.Receiver.html" title="struct websocket::receiver::Receiver">Receiver</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/receiver.rs.html#80-85' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Create a new Receiver using the specified Reader.</p>
+</div></div>
+            <h2 id='implementations' class='section-header'>
+              <a href='#implementations'>Trait Implementations</a>
+            </h2>
+        <h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="../../websocket/ws/receiver/trait.Receiver.html" title="trait websocket::ws::receiver::Receiver">Receiver</a> for <a class="struct" href="../../websocket/receiver/struct.Receiver.html" title="struct websocket::receiver::Receiver">Receiver</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/receiver.rs.html#89-137' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='associatedtype.F' class="type"><span id='F.t' class='invisible'><code>type <a href='../../websocket/ws/receiver/trait.Receiver.html#associatedtype.F' class="type">F</a> = <a class="struct" href="../../websocket/dataframe/struct.DataFrame.html" title="struct websocket::dataframe::DataFrame">DataFrame</a></code></span></h4>
+<div class='docblock'><p>The type of dataframe that incoming messages will be serialized to.</p>
+</div><h4 id='associatedtype.M' class="type"><span id='M.t' class='invisible'><code>type <a href='../../websocket/ws/receiver/trait.Receiver.html#associatedtype.M' class="type">M</a> = <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span></h4>
+<div class='docblock'><p>The type of message that incoming messages will be serialized to.</p>
+</div><h4 id='method.recv_dataframe' class="method"><span id='recv_dataframe.v' class='invisible'><code>fn <a href='../../websocket/ws/receiver/trait.Receiver.html#tymethod.recv_dataframe' class='fnname'>recv_dataframe</a>&lt;R&gt;(&amp;mut self, reader: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>R) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;<a class="struct" href="../../websocket/dataframe/struct.DataFrame.html" title="struct websocket::dataframe::DataFrame">DataFrame</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;R: <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Read.html" title="trait std::io::Read">Read</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/receiver.rs.html#95-99' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Reads a single data frame from the remote endpoint.</p>
+</div><h4 id='method.recv_message_dataframes' class="method"><span id='recv_message_dataframes.v' class='invisible'><code>fn <a href='../../websocket/ws/receiver/trait.Receiver.html#tymethod.recv_message_dataframes' class='fnname'>recv_message_dataframes</a>&lt;R&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;reader: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>R<br>) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../../websocket/dataframe/struct.DataFrame.html" title="struct websocket::dataframe::DataFrame">DataFrame</a>&gt;&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;R: <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Read.html" title="trait std::io::Read">Read</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/receiver.rs.html#102-136' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns the data frames that constitute one message.</p>
+</div><h4 id='method.incoming_dataframes' class="method"><span id='incoming_dataframes.v' class='invisible'><code>fn <a href='../../websocket/ws/receiver/trait.Receiver.html#method.incoming_dataframes' class='fnname'>incoming_dataframes</a>&lt;'a, R&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;'a mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;reader: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;'a mut </a>R<br>) -&gt; <a class="struct" href="../../websocket/ws/receiver/struct.DataFrameIterator.html" title="struct websocket::ws::receiver::DataFrameIterator">DataFrameIterator</a>&lt;'a, Self, R&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;R: <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Read.html" title="trait std::io::Read">Read</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/ws/receiver.rs.html#27-34' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns an iterator over incoming data frames.</p>
+</div><h4 id='method.recv_message' class="method"><span id='recv_message.v' class='invisible'><code>fn <a href='../../websocket/ws/receiver/trait.Receiver.html#method.recv_message' class='fnname'>recv_message</a>&lt;'m, R&gt;(&amp;mut self, reader: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>R) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;Self::<a class="type" href="../../websocket/ws/receiver/trait.Receiver.html#associatedtype.M" title="type websocket::ws::receiver::Receiver::M">M</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;R: <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Read.html" title="trait std::io::Read">Read</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/ws/receiver.rs.html#37-42' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Reads a single message from this receiver.</p>
+</div><h4 id='method.incoming_messages' class="method"><span id='incoming_messages.v' class='invisible'><code>fn <a href='../../websocket/ws/receiver/trait.Receiver.html#method.incoming_messages' class='fnname'>incoming_messages</a>&lt;'a, R&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;'a mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;reader: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;'a mut </a>R<br>) -&gt; <a class="struct" href="../../websocket/ws/receiver/struct.MessageIterator.html" title="struct websocket::ws::receiver::MessageIterator">MessageIterator</a>&lt;'a, Self, R&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;R: <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Read.html" title="trait std::io::Read">Read</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/ws/receiver.rs.html#45-52' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns an iterator over incoming messages.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "websocket";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `OwnedMessage` enum in crate `websocket`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, OwnedMessage">
+
+    <title>websocket::message::OwnedMessage - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc enum">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Enum OwnedMessage</p><div class="block items"><ul><li><a href="#variants">Variants</a></li><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>websocket</a>::<wbr><a href='index.html'>message</a></p><script>window.sidebarCurrent = {name: 'OwnedMessage', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>websocket</a>::<wbr><a href='index.html'>message</a>::<wbr><a class="enum" href=''>OwnedMessage</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/websocket/message.rs.html#237-252' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum OwnedMessage {
+    Text(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>),
+    Binary(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;),
+    Close(<a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../websocket/message/struct.CloseData.html" title="struct websocket::message::CloseData">CloseData</a>&gt;),
+    Ping(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;),
+    Pong(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;),
+}</pre><div class='docblock'><p>Represents an owned WebSocket message.</p>
+
+<p><code>OwnedMessage</code>s are generated when the user receives a message (since the data
+has to be copied out of the network buffer anyway).
+If you would like to create a message out of borrowed data to use for sending
+please use the <code>Message</code> struct (which contains a <code>Cow</code>).</p>
+
+<p>Note that <code>OwnedMessage</code> can <code>Message</code> can be converted into each other.</p>
+</div><h2 id='variants' class='variants section-header'>
+                   <a href='#variants'>Variants</a></h2>
+<span id='variant.Text' class='variant'><span id='Text.v' class='invisible'><code>Text(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>)</code></span></span><div class='docblock'><p>A message containing UTF-8 text data</p>
+</div><span id='variant.Binary' class='variant'><span id='Binary.v' class='invisible'><code>Binary(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;)</code></span></span><div class='docblock'><p>A message containing binary data</p>
+</div><span id='variant.Close' class='variant'><span id='Close.v' class='invisible'><code>Close(<a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../websocket/message/struct.CloseData.html" title="struct websocket::message::CloseData">CloseData</a>&gt;)</code></span></span><div class='docblock'><p>A message which indicates closure of the WebSocket connection.
+This message may or may not contain data.</p>
+</div><span id='variant.Ping' class='variant'><span id='Ping.v' class='invisible'><code>Ping(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;)</code></span></span><div class='docblock'><p>A ping message - should be responded to with a pong message.
+Usually the pong message will be sent with the same data as the
+received ping message.</p>
+</div><span id='variant.Pong' class='variant'><span id='Pong.v' class='invisible'><code>Pong(<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;)</code></span></span><div class='docblock'><p>A pong message, sent in response to a Ping message, usually
+containing the same data as the received ping message.</p>
+</div>
+                    <h2 id='methods' class='section-header'>
+                      <a href='#methods'>Methods</a>
+                    </h2>
+                <h3 class='impl'><span class='in-band'><code>impl <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#254-326' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.is_close' class="method"><span id='is_close.v' class='invisible'><code>fn <a href='#method.is_close' class='fnname'>is_close</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#261-266' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checks if this message is a close message.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OwnedMessage</span>::<span class="ident">Close</span>(<span class="prelude-val">None</span>).<span class="ident">is_close</span>());</pre>
+</div><h4 id='method.is_control' class="method"><span id='is_control.v' class='invisible'><code>fn <a href='#method.is_control' class='fnname'>is_control</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#277-284' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checks if this message is a control message.
+ Control messages are either <code>Close</code>, <code>Ping</code>, or <code>Pong</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OwnedMessage</span>::<span class="ident">Ping</span>(<span class="macro">vec</span><span class="macro">!</span>[]).<span class="ident">is_control</span>());
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OwnedMessage</span>::<span class="ident">Pong</span>(<span class="macro">vec</span><span class="macro">!</span>[]).<span class="ident">is_control</span>());
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OwnedMessage</span>::<span class="ident">Close</span>(<span class="prelude-val">None</span>).<span class="ident">is_control</span>());</pre>
+</div><h4 id='method.is_data' class="method"><span id='is_data.v' class='invisible'><code>fn <a href='#method.is_data' class='fnname'>is_data</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#294-296' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checks if this message is a data message.
+ Data messages are either <code>Text</code> or <code>Binary</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OwnedMessage</span>::<span class="ident">Text</span>(<span class="string">&quot;1337&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">is_data</span>());
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OwnedMessage</span>::<span class="ident">Binary</span>(<span class="macro">vec</span><span class="macro">!</span>[]).<span class="ident">is_data</span>());</pre>
+</div><h4 id='method.is_ping' class="method"><span id='is_ping.v' class='invisible'><code>fn <a href='#method.is_ping' class='fnname'>is_ping</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#306-311' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checks if this message is a ping message.
+ <code>Ping</code> messages can come at any time and usually generate a <code>Pong</code> message
+ response.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OwnedMessage</span>::<span class="ident">Ping</span>(<span class="string">&quot;ping&quot;</span>.<span class="ident">to_string</span>().<span class="ident">into_bytes</span>()).<span class="ident">is_ping</span>());</pre>
+</div><h4 id='method.is_pong' class="method"><span id='is_pong.v' class='invisible'><code>fn <a href='#method.is_pong' class='fnname'>is_pong</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#320-325' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checks if this message is a pong message.
+ <code>Pong</code> messages are usually sent only in response to <code>Ping</code> messages.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">OwnedMessage</span>::<span class="ident">Pong</span>(<span class="string">&quot;pong&quot;</span>.<span class="ident">to_string</span>().<span class="ident">into_bytes</span>()).<span class="ident">is_pong</span>());</pre>
+</div></div>
+            <h2 id='implementations' class='section-header'>
+              <a href='#implementations'>Trait Implementations</a>
+            </h2>
+        <h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> for <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#236' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> for <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#236' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.eq' class="method"><span id='eq.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#236' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+</div><h4 id='method.ne' class="method"><span id='ne.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, __arg_0: &amp;<a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#236' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#236' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#236' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class="method"><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/clone.rs.html#111-113' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#236' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#236' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="../../websocket/ws/message/trait.Message.html" title="trait websocket::ws::message::Message">Message</a> for <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#328-345' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.serialize' class="method"><span id='serialize.v' class='invisible'><code>fn <a href='../../websocket/ws/message/trait.Message.html#tymethod.serialize' class='fnname'>serialize</a>(&amp;self, writer: &amp;mut <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>, masked: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#330-332' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Attempt to form a message from a series of data frames</p>
+</div><h4 id='method.message_size' class="method"><span id='message_size.v' class='invisible'><code>fn <a href='../../websocket/ws/message/trait.Message.html#tymethod.message_size' class='fnname'>message_size</a>(&amp;self, masked: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#335-337' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns how many bytes this message will take up</p>
+</div><h4 id='method.from_dataframes' class="method"><span id='from_dataframes.v' class='invisible'><code>fn <a href='../../websocket/ws/message/trait.Message.html#tymethod.from_dataframes' class='fnname'>from_dataframes</a>&lt;D&gt;(frames: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;D&gt;) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;Self&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;D: <a class="trait" href="../../websocket/ws/dataframe/trait.DataFrame.html" title="trait websocket::ws::dataframe::DataFrame">DataFrameTrait</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#340-344' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Attempt to form a message from a series of data frames</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="../../websocket/ws/dataframe/trait.DataFrame.html" title="trait websocket::ws::dataframe::DataFrame">DataFrame</a> for <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#347-423' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.is_last' class="method"><span id='is_last.v' class='invisible'><code>fn <a href='../../websocket/ws/dataframe/trait.DataFrame.html#tymethod.is_last' class='fnname'>is_last</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#349-351' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Is this dataframe the final dataframe of the message?</p>
+</div><h4 id='method.opcode' class="method"><span id='opcode.v' class='invisible'><code>fn <a href='../../websocket/ws/dataframe/trait.DataFrame.html#tymethod.opcode' class='fnname'>opcode</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#354-362' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>What type of data does this dataframe contain?</p>
+</div><h4 id='method.reserved' class="method"><span id='reserved.v' class='invisible'><code>fn <a href='../../websocket/ws/dataframe/trait.DataFrame.html#tymethod.reserved' class='fnname'>reserved</a>(&amp;self) -&gt; &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 3]</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#365-367' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Reserved bits of this dataframe</p>
+</div><h4 id='method.size' class="method"><span id='size.v' class='invisible'><code>fn <a href='../../websocket/ws/dataframe/trait.DataFrame.html#tymethod.size' class='fnname'>size</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#369-382' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>How long (in bytes) is this dataframe&#39;s payload</p>
+</div><h4 id='method.write_payload' class="method"><span id='write_payload.v' class='invisible'><code>fn <a href='../../websocket/ws/dataframe/trait.DataFrame.html#tymethod.write_payload' class='fnname'>write_payload</a>(&amp;self, socket: &amp;mut <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#384-401' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Write the payload to a writer</p>
+</div><h4 id='method.take_payload' class="method"><span id='take_payload.v' class='invisible'><code>fn <a href='../../websocket/ws/dataframe/trait.DataFrame.html#tymethod.take_payload' class='fnname'>take_payload</a>(self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#403-422' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Takes the payload out into a vec</p>
+</div><h4 id='method.frame_size' class="method"><span id='frame_size.v' class='invisible'><code>fn <a href='../../websocket/ws/dataframe/trait.DataFrame.html#method.frame_size' class='fnname'>frame_size</a>(&amp;self, masked: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/ws/dataframe.rs.html#27-44' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Get&#39;s the size of the entire dataframe in bytes, i.e. header and payload. <a href="../../websocket/ws/dataframe/trait.DataFrame.html#method.frame_size">Read more</a></p>
+</div><h4 id='method.write_to' class="method"><span id='write_to.v' class='invisible'><code>fn <a href='../../websocket/ws/dataframe/trait.DataFrame.html#method.write_to' class='fnname'>write_to</a>(&amp;self, writer: &amp;mut <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a>, mask: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; <a class="type" href="../../websocket/result/type.WebSocketResult.html" title="type websocket::result::WebSocketResult">WebSocketResult</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/ws/dataframe.rs.html#53-91' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Writes a DataFrame to a Writer.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;'m&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="../../websocket/message/struct.Message.html" title="struct websocket::message::Message">Message</a>&lt;'m&gt;&gt; for <a class="enum" href="../../websocket/message/enum.OwnedMessage.html" title="enum websocket::message::OwnedMessage">OwnedMessage</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#425-450' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from' class="method"><span id='from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(message: <a class="struct" href="../../websocket/message/struct.Message.html" title="struct websocket::message::Message">Message</a>&lt;'m&gt;) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/websocket/message.rs.html#426-449' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "websocket";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

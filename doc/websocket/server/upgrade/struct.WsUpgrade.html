@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `WsUpgrade` struct in crate `websocket`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, WsUpgrade">
+
+    <title>websocket::server::upgrade::WsUpgrade - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct WsUpgrade</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li></ul></div><p class='location'><a href='../../index.html'>websocket</a>::<wbr><a href='../index.html'>server</a>::<wbr><a href='index.html'>upgrade</a></p><script>window.sidebarCurrent = {name: 'WsUpgrade', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>websocket</a>::<wbr><a href='../index.html'>server</a>::<wbr><a href='index.html'>upgrade</a>::<wbr><a class="struct" href=''>WsUpgrade</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#40-51' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct WsUpgrade&lt;S, B&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../../../websocket/stream/trait.Stream.html" title="trait websocket::stream::Stream">Stream</a>,&nbsp;</span> {
+    pub headers: <a class="struct" href="../../../hyper/header/struct.Headers.html" title="struct hyper::header::Headers">Headers</a>,
+    pub stream: S,
+    pub request: <a class="type" href="../../../websocket/server/upgrade/type.Request.html" title="type websocket::server::upgrade::Request">Request</a>,
+    pub buffer: B,
+}</pre><div class='docblock'><p>Intermediate representation of a half created websocket session.
+Should be used to examine the client&#39;s handshake
+accept the protocols requested, route the path, etc.</p>
+
+<p>Users should then call <code>accept</code> or <code>reject</code> to complete the handshake
+and start a session.
+Note: if the stream in use is <code>AsyncRead + AsyncWrite</code>, then asynchronous
+functions will be available when completing the handshake.
+Otherwise if the stream is simply <code>Read + Write</code> blocking functions will be
+available to complete the handshake.</p>
+</div><h2 id='fields' class='fields section-header'>
+                       <a href='#fields'>Fields</a></h2><span id='structfield.headers' class="structfield">
+                           <span id='headers.v' class='invisible'>
+                           <code>headers: <a class="struct" href="../../../hyper/header/struct.Headers.html" title="struct hyper::header::Headers">Headers</a></code>
+                           </span></span><div class='docblock'><p>The headers that will be used in the handshake response.</p>
+</div><span id='structfield.stream' class="structfield">
+                           <span id='stream.v' class='invisible'>
+                           <code>stream: S</code>
+                           </span></span><div class='docblock'><p>The stream that will be used to read from / write to.</p>
+</div><span id='structfield.request' class="structfield">
+                           <span id='request.v' class='invisible'>
+                           <code>request: <a class="type" href="../../../websocket/server/upgrade/type.Request.html" title="type websocket::server::upgrade::Request">Request</a></code>
+                           </span></span><div class='docblock'><p>The handshake request, filled with useful metadata.</p>
+</div><span id='structfield.buffer' class="structfield">
+                           <span id='buffer.v' class='invisible'>
+                           <code>buffer: B</code>
+                           </span></span><div class='docblock'><p>Some buffered data from the stream, if it exists.</p>
+</div>
+                    <h2 id='methods' class='section-header'>
+                      <a href='#methods'>Methods</a>
+                    </h2>
+                <h3 class='impl'><span class='in-band'><code>impl&lt;S&gt; <a class="struct" href="../../../websocket/server/upgrade/struct.WsUpgrade.html" title="struct websocket::server::upgrade::WsUpgrade">WsUpgrade</a>&lt;S, <a class="struct" href="../../../bytes/bytes/struct.BytesMut.html" title="struct bytes::bytes::BytesMut">BytesMut</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../../../websocket/stream/async/trait.Stream.html" title="trait websocket::stream::async::Stream">Stream</a> + 'static,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/async.rs.html#67-140' title='goto source code'>[src]</a></span></h3>
+<div class='docblock'><p>These are the extra functions given to <code>WsUpgrade</code> with the <code>async</code> feature
+turned on. A type alias for this specialization of <code>WsUpgrade</code> lives in this
+module under the name <code>Upgrade</code>.</p>
+</div><div class='impl-items'><h4 id='method.accept' class="method"><span id='accept.v' class='invisible'><code>fn <a href='#method.accept' class='fnname'>accept</a>(self) -&gt; <a class="type" href="../../../websocket/client/async/type.ClientNew.html" title="type websocket::client::async::ClientNew">ClientNew</a>&lt;S&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/async.rs.html#73-75' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Asynchronously accept the websocket handshake, then create a client.
+This will asynchronously send a response accepting the connection
+and create a websocket client.</p>
+</div><h4 id='method.accept_with' class="method"><span id='accept_with.v' class='invisible'><code>fn <a href='#method.accept_with' class='fnname'>accept_with</a>(self, custom_headers: &amp;<a class="struct" href="../../../hyper/header/struct.Headers.html" title="struct hyper::header::Headers">Headers</a>) -&gt; <a class="type" href="../../../websocket/client/async/type.ClientNew.html" title="type websocket::client::async::ClientNew">ClientNew</a>&lt;S&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/async.rs.html#80-82' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Asynchronously accept the websocket handshake, then create a client.
+This will asynchronously send a response accepting the connection
+with custom headers in the response and create a websocket client.</p>
+</div><h4 id='method.reject' class="method"><span id='reject.v' class='invisible'><code>fn <a href='#method.reject' class='fnname'>reject</a>(self) -&gt; <a class="struct" href="../../../websocket/async/futures/sink/struct.Send.html" title="struct websocket::async::futures::sink::Send">Send</a>&lt;<a class="struct" href="../../../websocket/client/async/struct.Framed.html" title="struct websocket::client::async::Framed">Framed</a>&lt;S, <a class="struct" href="../../../websocket/codec/http/struct.HttpServerCodec.html" title="struct websocket::codec::http::HttpServerCodec">HttpServerCodec</a>&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/async.rs.html#112-114' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Asynchronously send a rejection message and deconstruct <code>self</code>
+into it&#39;s original stream. The stream being returned is framed with the
+<code>HttpServerCodec</code> since that was used to send the rejection message.</p>
+</div><h4 id='method.reject_with' class="method"><span id='reject_with.v' class='invisible'><code>fn <a href='#method.reject_with' class='fnname'>reject_with</a>(self, headers: &amp;<a class="struct" href="../../../hyper/header/struct.Headers.html" title="struct hyper::header::Headers">Headers</a>) -&gt; <a class="struct" href="../../../websocket/async/futures/sink/struct.Send.html" title="struct websocket::async::futures::sink::Send">Send</a>&lt;<a class="struct" href="../../../websocket/client/async/struct.Framed.html" title="struct websocket::client::async::Framed">Framed</a>&lt;S, <a class="struct" href="../../../websocket/codec/http/struct.HttpServerCodec.html" title="struct websocket::codec::http::HttpServerCodec">HttpServerCodec</a>&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/async.rs.html#120-122' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Asynchronously send a rejection message with custom headers and
+deconstruct <code>self</code> into it&#39;s original stream.
+ The stream being returned is framed with the
+<code>HttpServerCodec</code> since that was used to send the rejection message.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;S&gt; <a class="struct" href="../../../websocket/server/upgrade/struct.WsUpgrade.html" title="struct websocket::server::upgrade::WsUpgrade">WsUpgrade</a>&lt;S, <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../../websocket/server/upgrade/sync/struct.Buffer.html" title="struct websocket::server::upgrade::sync::Buffer">Buffer</a>&gt;&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../../../websocket/stream/trait.Stream.html" title="trait websocket::stream::Stream">Stream</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/sync.rs.html#47-98' title='goto source code'>[src]</a></span></h3>
+<div class='docblock'><p>These methods are the synchronous ways of accepting and rejecting a websocket
+handshake.</p>
+</div><div class='impl-items'><h4 id='method.accept-1' class="method"><span id='accept.v-1' class='invisible'><code>fn <a href='#method.accept-1' class='fnname'>accept</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../../../websocket/client/sync/struct.Client.html" title="struct websocket::client::sync::Client">Client</a>&lt;S&gt;, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>S, <a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/sync.rs.html#52-54' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Accept the handshake request and send a response,
+if nothing goes wrong a client will be created.</p>
+</div><h4 id='method.accept_with-1' class="method"><span id='accept_with.v-1' class='invisible'><code>fn <a href='#method.accept_with-1' class='fnname'>accept_with</a>(self, custom_headers: &amp;<a class="struct" href="../../../hyper/header/struct.Headers.html" title="struct hyper::header::Headers">Headers</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../../../websocket/client/sync/struct.Client.html" title="struct websocket::client::sync::Client">Client</a>&lt;S&gt;, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>S, <a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/sync.rs.html#59-61' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Accept the handshake request and send a response while
+adding on a few headers. These headers are added before the required
+headers are, so some might be overwritten.</p>
+</div><h4 id='method.reject-1' class="method"><span id='reject.v-1' class='invisible'><code>fn <a href='#method.reject-1' class='fnname'>reject</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;S, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>S, <a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/sync.rs.html#79-81' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Reject the client&#39;s request to make a websocket connection.</p>
+</div><h4 id='method.reject_with-1' class="method"><span id='reject_with.v-1' class='invisible'><code>fn <a href='#method.reject_with-1' class='fnname'>reject_with</a>(self, headers: &amp;<a class="struct" href="../../../hyper/header/struct.Headers.html" title="struct hyper::header::Headers">Headers</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;S, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>S, <a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/sync.rs.html#85-87' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Reject the client&#39;s request to make a websocket connection
+and send extra headers.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;S, B&gt; <a class="struct" href="../../../websocket/server/upgrade/struct.WsUpgrade.html" title="struct websocket::server::upgrade::WsUpgrade">WsUpgrade</a>&lt;S, B&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../../../websocket/stream/trait.Stream.html" title="trait websocket::stream::Stream">Stream</a> + <a class="trait" href="../../../websocket/stream/sync/trait.AsTcpStream.html" title="trait websocket::stream::sync::AsTcpStream">AsTcpStream</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/sync.rs.html#100-108' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.tcp_stream' class="method"><span id='tcp_stream.v' class='invisible'><code>fn <a href='#method.tcp_stream' class='fnname'>tcp_stream</a>(&amp;self) -&gt; &amp;<a class="struct" href="../../../websocket/stream/sync/struct.TcpStream.html" title="struct websocket::stream::sync::TcpStream">TcpStream</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/sync.rs.html#105-107' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Get a handle to the underlying TCP stream, useful to be able to set
+TCP options, etc.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;S, B&gt; <a class="struct" href="../../../websocket/server/upgrade/struct.WsUpgrade.html" title="struct websocket::server::upgrade::WsUpgrade">WsUpgrade</a>&lt;S, B&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="../../../websocket/stream/trait.Stream.html" title="trait websocket::stream::Stream">Stream</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#53-151' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.use_protocol' class="method"><span id='use_protocol.v' class='invisible'><code>fn <a href='#method.use_protocol' class='fnname'>use_protocol</a>&lt;P&gt;(self, protocol: P) -&gt; Self <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;P: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>&gt;,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#57-65' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Select a protocol to use in the handshake response.</p>
+</div><h4 id='method.use_extension' class="method"><span id='use_extension.v' class='invisible'><code>fn <a href='#method.use_extension' class='fnname'>use_extension</a>(self, extension: <a class="struct" href="../../../websocket/header/extensions/struct.Extension.html" title="struct websocket::header::extensions::Extension">Extension</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#68-74' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Select an extension to use in the handshake response.</p>
+</div><h4 id='method.use_extensions' class="method"><span id='use_extensions.v' class='invisible'><code>fn <a href='#method.use_extensions' class='fnname'>use_extensions</a>&lt;I&gt;(self, extensions: I) -&gt; Self <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;I: <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html" title="trait core::iter::traits::IntoIterator">IntoIterator</a>&lt;Item = <a class="struct" href="../../../websocket/header/extensions/struct.Extension.html" title="struct websocket::header::extensions::Extension">Extension</a>&gt;,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#77-87' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Select multiple extensions to use in the connection</p>
+</div><h4 id='method.drop' class="method"><span id='drop.v' class='invisible'><code>fn <a href='#method.drop' class='fnname'>drop</a>(self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#90-92' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Drop the connection without saying anything.</p>
+</div><h4 id='method.protocols' class="method"><span id='protocols.v' class='invisible'><code>fn <a href='#method.protocols' class='fnname'>protocols</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#95-101' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>A list of protocols requested from the client.</p>
+</div><h4 id='method.extensions' class="method"><span id='extensions.v' class='invisible'><code>fn <a href='#method.extensions' class='fnname'>extensions</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="struct" href="../../../websocket/header/extensions/struct.Extension.html" title="struct websocket::header::extensions::Extension">Extension</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#104-110' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>A list of extensions requested from the client.</p>
+</div><h4 id='method.key' class="method"><span id='key.v' class='invisible'><code>fn <a href='#method.key' class='fnname'>key</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 16]</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#113-115' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>The client&#39;s websocket accept key.</p>
+</div><h4 id='method.version' class="method"><span id='version.v' class='invisible'><code>fn <a href='#method.version' class='fnname'>version</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="enum" href="../../../websocket/header/enum.WebSocketVersion.html" title="enum websocket::header::WebSocketVersion">WebSocketVersion</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#118-120' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>The client&#39;s websocket version.</p>
+</div><h4 id='method.origin' class="method"><span id='origin.v' class='invisible'><code>fn <a href='#method.origin' class='fnname'>origin</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/websocket/server/upgrade/mod.rs.html#123-125' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Origin of the client</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "websocket";
+    </script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>
