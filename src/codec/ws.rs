@@ -245,18 +245,22 @@ impl<M> Decoder for MessageCodec<M>
 			match frame.opcode as u8 {
 				// continuation code
 				0 if is_first => {
+					trace!("Unexpected continuation: {:?}", frame);
 					return Err(WebSocketError::ProtocolError("Unexpected continuation data frame opcode",),);
 				}
 				// control frame
 				8...15 => {
+					trace!("Got control frame: {:?}", frame);
 					return Ok(Some(OwnedMessage::from_dataframes(vec![frame])?));
 				}
 				// data frame
 				1...7 if !is_first => {
+					trace!("Unexpected data frame opcode: {:?}", frame);
 					return Err(WebSocketError::ProtocolError("Unexpected data frame opcode"));
 				}
 				// its good
 				_ => {
+					trace!("Valid opcode: {:?}", frame);
 					self.buffer.push(frame);
 				}
 			};

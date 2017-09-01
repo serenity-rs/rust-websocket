@@ -47,7 +47,8 @@ extern crate bytes;
 pub extern crate futures;
 #[cfg(feature="async-ssl")]
 extern crate tokio_tls;
-
+#[macro_use]
+extern crate log;
 #[macro_use]
 extern crate bitflags;
 

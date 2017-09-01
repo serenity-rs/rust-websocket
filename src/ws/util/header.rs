@@ -77,6 +77,8 @@ pub fn read_header<R>(reader: &mut R) -> WebSocketResult<DataFrameHeader>
 	let flags = DataFrameFlags::from_bits_truncate(byte0);
 	let opcode = byte0 & 0x0F;
 
+	trace!("Len byte: {}", byte1 & 0x7F);
+
 	let len = match byte1 & 0x7F {
 		0...125 => (byte1 & 0x7F) as u64,
 		126 => {
@@ -95,6 +97,7 @@ pub fn read_header<R>(reader: &mut R) -> WebSocketResult<DataFrameHeader>
 		}
 		_ => unreachable!(),
 	};
+	trace!("Packet len: {}", len);
 
 	if opcode >= 8 {
 		if len >= 126 {
