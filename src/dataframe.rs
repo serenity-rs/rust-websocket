@@ -5,6 +5,7 @@ use ws::dataframe::DataFrame as DataFrameable;
 use ws::util::header::DataFrameHeader;
 use ws::util::header as dfh;
 use ws::util::mask;
+use std::sync::RwLock;
 
 /// Represents a WebSocket data frame.
 ///
@@ -83,15 +84,80 @@ impl DataFrame {
 	pub fn read_dataframe<R>(reader: &mut R, should_be_masked: bool) -> WebSocketResult<Self>
 		where R: Read
 	{
-		let header = dfh::read_header(reader)?;
+		// If a read fails, these will store previous state so we can recover.
+		lazy_static! {
+			static ref HEADER: RwLock<Option<DataFrameHeader>> = {
+				RwLock::new(None)
+			};
 
-		let mut data: Vec<u8> = Vec::with_capacity(header.len as usize);
-		let read = reader.take(header.len).read_to_end(&mut data)?;
-		if (read as u64) < header.len {
+			static ref PACKET: RwLock<Vec<u8>> = {
+				RwLock::new(Vec::new())
+			};
+		}
+
+		//	If a header was read previously, use that. Otherwise read a new one.
+		let header = match *HEADER.read().unwrap() {
+			Some(header) => {
+				trace!("Restored header.");
+				header
+			}
+			None => {
+				trace!("New header.");
+				dfh::read_header(reader)?
+			}
+		};
+		trace!("Got header");
+		let mut packet = PACKET.write().unwrap();
+
+		//	If this is a new packet, allocate space for it.
+		if packet.capacity() != header.len as usize {
+			trace!("Allocating new vector with capacity: {}", header.len);
+			*packet = Vec::with_capacity(header.len as usize);
+		}
+
+		let len = packet.len();
+		let mut data = Vec::new();
+
+		trace!("Reading {} - {} = {}", header.len, len, header.len as usize - len);
+
+		let read = match reader
+				.take(header.len - len as u64)
+				.read_to_end(&mut data) {
+			Ok(read) => read,
+			Err(why) => {
+				// Could not read entire packet at once
+				// Store what we got and return the error.
+				trace!("Error reading: {}", data.len());
+				packet.append(&mut data);
+				let mut h = HEADER.write().unwrap();
+				*h = Some(header);
+				trace!("Saved header");
+				return Err(WebSocketError::IoError(why));
+			}
+		};
+		trace!("Read {}", read);
+		trace!("Data: {:?}", data);
+
+		//	Append the last of the data to the packet.
+		packet.append(&mut data);
+		trace!("New packet len: {}", packet.len());
+
+		//	If there's still not enough data, then something is wrong.
+		if (packet.len() as u64) < header.len {
 			return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "incomplete payload").into());
 		}
 
-		DataFrame::read_dataframe_body(header, data, should_be_masked)
+		let frame = DataFrame::read_dataframe_body(header, packet.clone(), should_be_masked);
+
+		// This is the end, so reset the header and packet states.
+		{
+			let mut header = HEADER.write().unwrap();
+			*header = None;
+			trace!("Reset header");
+			*packet = Vec::new();
+		}
+
+		frame
 	}
 }
 

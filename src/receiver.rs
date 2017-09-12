@@ -97,8 +97,9 @@ impl ws::Receiver for Receiver {
 	{
 		let res = DataFrame::read_dataframe(reader, self.mask);
 
-		if let Ok(ref frame) = res {
-			trace!("Frame: {:?}", frame);
+		match res.as_ref() {
+			Ok(frame) => trace!("Frame: {:?}", frame),
+			Err(why) => error!("Frame: {:?}", why),
 		}
 
 		res

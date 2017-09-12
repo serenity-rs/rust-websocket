@@ -51,6 +51,8 @@ extern crate tokio_tls;
 extern crate log;
 #[macro_use]
 extern crate bitflags;
+#[macro_use]
+extern crate lazy_static;
 
 #[cfg(all(feature = "nightly", test))]
 extern crate test;
