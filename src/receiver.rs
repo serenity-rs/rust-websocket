@@ -95,14 +95,7 @@ impl ws::Receiver for Receiver {
 	fn recv_dataframe<R>(&mut self, reader: &mut R) -> WebSocketResult<DataFrame>
 		where R: Read
 	{
-		let res = DataFrame::read_dataframe(reader, self.mask);
-
-		match res.as_ref() {
-			Ok(frame) => trace!("Frame: {:?}", frame),
-			Err(why) => error!("Frame: {:?}", why),
-		}
-
-		res
+		DataFrame::read_dataframe(reader, self.mask)
 	}
 
 	/// Returns the data frames that constitute one message.
@@ -127,9 +120,6 @@ impl ws::Receiver for Receiver {
 			let next = self.recv_dataframe(reader)?;
 			finished = next.finished;
 
-
-			trace!("WS Data: {:?}", next);
-
 			match next.opcode as u8 {
 				// Continuation opcode
 				0 => self.buffer.push(next),
@@ -138,10 +128,7 @@ impl ws::Receiver for Receiver {
 					return Ok(vec![next]);
 				}
 				// Others
-				_ => {
-					trace!("Unexpected data frame opcode: {:?}", next);
-					return Err(WebSocketError::ProtocolError("Unexpected data frame opcode"));
-				}
+				_ => return Err(WebSocketError::ProtocolError("Unexpected data frame opcode")),
 			}
 		}
 
