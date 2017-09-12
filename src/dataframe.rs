@@ -111,16 +111,13 @@ impl DataFrame {
 		let len = packet.len();
 		let mut data = Vec::new();
 
-		let read = match reader.take(header.len - len as u64).read_to_end(&mut data) {
-			Ok(read) => read,
-			Err(why) => {
-				// Could not read entire packet at once
-				// Store what we got and return the error.
-				packet.append(&mut data);
-				let mut h = HEADER.write().unwrap();
-				*h = Some(header);
-				return Err(WebSocketError::IoError(why));
-			}
+		if let Err(why) = reader.take(header.len - len as u64).read_to_end(&mut data) {
+			// Could not read entire packet at once
+			// Store what we got and return the error.
+			packet.append(&mut data);
+			let mut h = HEADER.write().unwrap();
+			*h = Some(header);
+			return Err(WebSocketError::IoError(why));
 		};
 
 		//	Append the last of the data to the packet.
