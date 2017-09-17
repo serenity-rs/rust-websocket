@@ -7,6 +7,12 @@ use ws::util::header as dfh;
 use ws::util::mask;
 use std::sync::RwLock;
 use uuid::Uuid;
+use std::collections::HashMap;
+
+struct ReaderState {
+	header: Option<DataFrameHeader>,
+	packet: Vec<u8>,
+}
 
 /// Represents a WebSocket data frame.
 ///
@@ -88,56 +94,50 @@ impl DataFrame {
 		trace!("Reading data for {}", uuid);
 		// If a read fails, these will store previous state so we can recover.
 		lazy_static! {
-			static ref HEADER: RwLock<Option<DataFrameHeader>> = {
-				RwLock::new(None)
+			static ref STATE: RwLock<HashMap<Uuid, ReaderState>> = RwLock::new(HashMap::new());
+		}
+
+		let mut hashmap = STATE.write().unwrap();
+
+		let frame = {
+			let state = hashmap.entry(uuid).or_insert(ReaderState{
+				header: None,
+				packet: Vec::new(),
+			});
+
+			//	If a header was read previously, use that. Otherwise read a new one.
+			if state.header.is_none() {
+				state.header = Some(dfh::read_header(reader)?);
+			}
+
+			//	If this is a new packet, allocate space for it.
+			if state.packet.capacity() != state.header.unwrap().len as usize {
+				state.packet = Vec::with_capacity(state.header.unwrap().len as usize);
+			}
+
+			let len = state.packet.len();
+			let mut data = Vec::new();
+
+			if let Err(why) = reader.take(state.header.unwrap().len - len as u64).read_to_end(&mut data) {
+				// Could not read entire packet at once
+				// Store what we got and return the error.
+				state.packet.append(&mut data);
+				return Err(WebSocketError::IoError(why));
 			};
 
-			static ref PACKET: RwLock<Vec<u8>> = {
-				RwLock::new(Vec::new())
-			};
-		}
+			//	Append the last of the data to the packet.
+			state.packet.append(&mut data);
 
-		//	If a header was read previously, use that. Otherwise read a new one.
-		let header = match *HEADER.read().unwrap() {
-			Some(header) => header,
-			None => dfh::read_header(reader)?,
+			//	If there's still not enough data, then something is wrong.
+			if (state.packet.len() as u64) < state.header.unwrap().len {
+				return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "incomplete payload").into());
+			}
+
+			DataFrame::read_dataframe_body(state.header.unwrap(), state.packet.clone(), should_be_masked)
 		};
-		
-		let mut packet = PACKET.write().unwrap();
-
-		//	If this is a new packet, allocate space for it.
-		if packet.capacity() != header.len as usize {
-			*packet = Vec::with_capacity(header.len as usize);
-		}
-
-		let len = packet.len();
-		let mut data = Vec::new();
-
-		if let Err(why) = reader.take(header.len - len as u64).read_to_end(&mut data) {
-			// Could not read entire packet at once
-			// Store what we got and return the error.
-			packet.append(&mut data);
-			let mut h = HEADER.write().unwrap();
-			*h = Some(header);
-			return Err(WebSocketError::IoError(why));
-		};
-
-		//	Append the last of the data to the packet.
-		packet.append(&mut data);
-
-		//	If there's still not enough data, then something is wrong.
-		if (packet.len() as u64) < header.len {
-			return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "incomplete payload").into());
-		}
-
-		let frame = DataFrame::read_dataframe_body(header, packet.clone(), should_be_masked);
 
 		// This is the end, so reset the header and packet states.
-		{
-			let mut header = HEADER.write().unwrap();
-			*header = None;
-			*packet = Vec::new();
-		}
+		hashmap.remove(&uuid);
 
 		frame
 	}
