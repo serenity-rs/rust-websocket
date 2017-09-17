@@ -26,6 +26,8 @@ byteorder = "1.0"
 sha1 = "0.2"
 base64 = "0.5"
 lazy_static = "0.2"
+log = "0.3"
+uuid = { version = "0.5", features = ["v4"] }
 futures = { version = "0.1", optional = true }
 tokio-core = { version = "0.1", optional = true }
 tokio-io = { version = "^0.1.2", optional = true }

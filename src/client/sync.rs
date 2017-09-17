@@ -5,6 +5,7 @@ use std::io::Result as IoResult;
 use std::io::{Read, Write};
 use hyper::header::Headers;
 use hyper::buffer::BufReader;
+use uuid::Uuid;
 
 use ws;
 use ws::sender::Sender as SenderTrait;
@@ -59,6 +60,7 @@ pub struct Client<S>
 	headers: Headers,
 	sender: Sender,
 	receiver: Receiver,
+	uuid: Uuid,
 }
 
 impl Client<TcpStream> {
@@ -122,11 +124,14 @@ impl<S> Client<S>
 		out_mask: bool,
 		in_mask: bool,
 	) -> Self {
+		let uuid = Uuid::new_v4();
+		trace!("Creating client with UUID: {}", uuid);
 		Client {
 			headers: headers,
 			stream: stream,
 			sender: Sender::new(out_mask), // true
-			receiver: Receiver::new(in_mask), // false
+			receiver: Receiver::new(in_mask, uuid), // false
+			uuid: uuid,
 		}
 	}
 
@@ -146,7 +151,7 @@ impl<S> Client<S>
 
 	/// Reads a single data frame from the remote endpoint.
 	pub fn recv_dataframe(&mut self) -> WebSocketResult<DataFrame> {
-		self.receiver.recv_dataframe(&mut self.stream)
+		self.receiver.recv_dataframe(&mut self.stream, self.uuid)
 	}
 
 	/// Returns an iterator over incoming data frames.

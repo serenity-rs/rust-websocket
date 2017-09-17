@@ -35,6 +35,9 @@ extern crate rand;
 extern crate byteorder;
 extern crate sha1;
 extern crate base64;
+extern crate uuid;
+#[macro_use]
+extern crate log;
 #[cfg(any(feature="sync-ssl", feature="async-ssl"))]
 extern crate native_tls;
 #[cfg(feature="async")]

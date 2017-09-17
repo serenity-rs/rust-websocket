@@ -7,6 +7,7 @@ use std::io::Read;
 use ws::Message;
 use ws::dataframe::DataFrame;
 use result::WebSocketResult;
+use uuid::Uuid;
 
 /// A trait for receiving data frames and messages.
 pub trait Receiver: Sized {
@@ -16,8 +17,11 @@ pub trait Receiver: Sized {
 	/// The type of message that incoming messages will be serialized to.
 	type M: Message;
 
+	///	Gets the UUID of a receiver
+	fn uuid(&self) -> Uuid;
+
 	/// Reads a single data frame from this receiver.
-	fn recv_dataframe<R>(&mut self, reader: &mut R) -> WebSocketResult<Self::F> where R: Read;
+	fn recv_dataframe<R>(&mut self, reader: &mut R, uuid: Uuid) -> WebSocketResult<Self::F> where R: Read;
 
 	/// Returns the data frames that constitute one message.
 	fn recv_message_dataframes<R>(&mut self, reader: &mut R) -> WebSocketResult<Vec<Self::F>>
@@ -69,7 +73,8 @@ impl<'a, Recv, R> Iterator for DataFrameIterator<'a, Recv, R>
 
 	/// Get the next data frame from the receiver. Always returns `Some`.
 	fn next(&mut self) -> Option<WebSocketResult<Recv::F>> {
-		Some(self.inner.recv_dataframe(self.reader))
+		let uuid = self.inner.uuid();
+		Some(self.inner.recv_dataframe(self.reader, uuid))
 	}
 }
 

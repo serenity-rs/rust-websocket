@@ -6,6 +6,7 @@ use ws::util::header::DataFrameHeader;
 use ws::util::header as dfh;
 use ws::util::mask;
 use std::sync::RwLock;
+use uuid::Uuid;
 
 /// Represents a WebSocket data frame.
 ///
@@ -81,9 +82,10 @@ impl DataFrame {
 	}
 
 	/// Reads a DataFrame from a Reader.
-	pub fn read_dataframe<R>(reader: &mut R, should_be_masked: bool) -> WebSocketResult<Self>
+	pub fn read_dataframe<R>(reader: &mut R, should_be_masked: bool, uuid: Uuid) -> WebSocketResult<Self>
 		where R: Read
 	{
+		trace!("Reading data for {}", uuid);
 		// If a read fails, these will store previous state so we can recover.
 		lazy_static! {
 			static ref HEADER: RwLock<Option<DataFrameHeader>> = {

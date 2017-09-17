@@ -4,6 +4,7 @@ use std::io::Read;
 use std::io::Result as IoResult;
 
 use hyper::buffer::BufReader;
+use uuid::Uuid;
 
 use dataframe::{DataFrame, Opcode};
 use result::{WebSocketResult, WebSocketError};
@@ -30,7 +31,8 @@ impl<R> Reader<R>
 {
 	/// Reads a single data frame from the remote endpoint.
 	pub fn recv_dataframe(&mut self) -> WebSocketResult<DataFrame> {
-		self.receiver.recv_dataframe(&mut self.stream)
+		let uuid = self.receiver.uuid;
+		self.receiver.recv_dataframe(&mut self.stream, uuid)
 	}
 
 	/// Returns an iterator over incoming data frames.
@@ -73,14 +75,16 @@ impl<S> Reader<S>
 pub struct Receiver {
 	buffer: Vec<DataFrame>,
 	mask: bool,
+	uuid: Uuid,
 }
 
 impl Receiver {
 	/// Create a new Receiver using the specified Reader.
-	pub fn new(mask: bool) -> Receiver {
+	pub fn new(mask: bool, uuid: Uuid) -> Receiver {
 		Receiver {
 			buffer: Vec::new(),
 			mask: mask,
+			uuid: uuid,
 		}
 	}
 }
@@ -91,19 +95,24 @@ impl ws::Receiver for Receiver {
 
 	type M = OwnedMessage;
 
+	fn uuid(&self) -> Uuid {
+		self.uuid
+	}
+
 	/// Reads a single data frame from the remote endpoint.
-	fn recv_dataframe<R>(&mut self, reader: &mut R) -> WebSocketResult<DataFrame>
+	fn recv_dataframe<R>(&mut self, reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrame>
 		where R: Read
 	{
-		DataFrame::read_dataframe(reader, self.mask)
+		DataFrame::read_dataframe(reader, self.mask, uuid)
 	}
 
 	/// Returns the data frames that constitute one message.
 	fn recv_message_dataframes<R>(&mut self, reader: &mut R) -> WebSocketResult<Vec<DataFrame>>
 		where R: Read
 	{
+		let uuid = self.uuid;
 		let mut finished = if self.buffer.is_empty() {
-			let first = self.recv_dataframe(reader)?;
+			let first = self.recv_dataframe(reader, uuid)?;
 
 			if first.opcode == Opcode::Continuation {
 				return Err(WebSocketError::ProtocolError("Unexpected continuation data frame opcode",),);
@@ -117,7 +126,7 @@ impl ws::Receiver for Receiver {
 		};
 
 		while !finished {
-			let next = self.recv_dataframe(reader)?;
+			let next = self.recv_dataframe(reader, uuid)?;
 			finished = next.finished;
 
 			match next.opcode as u8 {
