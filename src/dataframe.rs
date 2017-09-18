@@ -107,7 +107,7 @@ impl DataFrame {
 
 			//	If a header was read previously, use that. Otherwise read a new one.
 			if state.header.is_none() {
-				state.header = Some(dfh::read_header(reader)?);
+				state.header = Some(dfh::read_header(reader, uuid)?);
 			}
 
 			//	If this is a new packet, allocate space for it.

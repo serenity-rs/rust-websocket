@@ -3,6 +3,18 @@
 use std::io::{Read, Write};
 use result::{WebSocketResult, WebSocketError};
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
+use uuid::Uuid;
+use std::collections::HashMap;
+use std::sync::RwLock;
+
+struct ReaderState {
+	flags: Option<DataFrameFlags>,
+	opcode: Option<u8>,
+	has_mask: bool,
+	mask: Vec<u8>,
+	len_byte: Option<u8>,
+	len: Option<u64>,
+}
 
 bitflags! {
 	/// Flags relevant to a WebSocket data frame.
@@ -67,61 +79,98 @@ pub fn write_header(writer: &mut Write, header: DataFrameHeader) -> WebSocketRes
 }
 
 /// Reads a data frame header.
-pub fn read_header<R>(reader: &mut R) -> WebSocketResult<DataFrameHeader>
+pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHeader>
 	where R: Read
 {
-
-	let byte0 = reader.read_u8()?;
-	let byte1 = reader.read_u8()?;
-
-	let flags = DataFrameFlags::from_bits_truncate(byte0);
-	let opcode = byte0 & 0x0F;
-
-	let len = match byte1 & 0x7F {
-		0...125 => (byte1 & 0x7F) as u64,
-		126 => {
-			let len = reader.read_u16::<BigEndian>()? as u64;
-			if len <= 125 {
-				return Err(WebSocketError::DataFrameError("Invalid data frame length"));
-			}
-			len
-		}
-		127 => {
-			let len = reader.read_u64::<BigEndian>()?;
-			if len <= 65535 {
-				return Err(WebSocketError::DataFrameError("Invalid data frame length"));
-			}
-			len
-		}
-		_ => unreachable!(),
-	};
-
-	if opcode >= 8 {
-		if len >= 126 {
-			return Err(WebSocketError::DataFrameError("Control frame length too long"));
-		}
-		if !flags.contains(FIN) {
-			return Err(WebSocketError::ProtocolError("Illegal fragmented control frame"));
-		}
+	// If a read fails, these will store previous state so we can recover.
+	lazy_static! {
+		static ref STATE: RwLock<HashMap<Uuid, ReaderState>> = RwLock::new(HashMap::new());
 	}
 
-	let mask = if byte1 & 0x80 == 0x80 {
-		Some([
-			reader.read_u8()?,
-			reader.read_u8()?,
-			reader.read_u8()?,
-			reader.read_u8()?,
-		])
-	} else {
-		None
+	let mut hashmap = STATE.write().unwrap();
+
+	let ret = {
+		let dataframe = hashmap.entry(uuid).or_insert(ReaderState {
+			flags: None,
+			opcode: None,
+			has_mask: false,
+			mask: Vec::with_capacity(4),
+			len_byte: None,
+			len: None,
+		});
+
+		if dataframe.flags.is_none() {
+			reader.read_u8().and_then(|byte| {
+				dataframe.flags = Some(DataFrameFlags::from_bits_truncate(byte));
+				dataframe.opcode = Some(byte & 0x0F);
+				Ok(())
+			})?;
+		}
+
+		dataframe.len_byte = match reader.read_u8() {
+			Ok(byte) => Some(byte),
+			Err(why) => return Err(WebSocketError::IoError(why)),
+		};
+		
+		let byte = dataframe.len_byte.unwrap();
+		dataframe.has_mask = byte & 0x80 == 0x80;
+
+		if dataframe.len.is_none() {
+			let len = match byte & 0x7F {
+				0...125 => (byte & 0x7F) as u64,
+				126 => {
+					let len = reader.read_u16::<BigEndian>()? as u64;
+					if len <= 125 {
+						return Err(WebSocketError::DataFrameError("Invalid data frame length"));
+					}
+					len
+				}
+				127 => {
+					let len = reader.read_u64::<BigEndian>()?;
+					if len <= 65535 {
+						return Err(WebSocketError::DataFrameError("Invalid data frame length"));
+					}
+					len
+				}
+				_ => unreachable!(),
+			};
+
+			dataframe.len = Some(len);
+		}
+
+		if dataframe.opcode.unwrap() >= 8 {
+			if dataframe.len.unwrap() >= 126 {
+				return Err(WebSocketError::DataFrameError("Control frame length too long"));
+			}
+			if !dataframe.flags.unwrap().contains(FIN) {
+				return Err(WebSocketError::ProtocolError("Illegal fragmented control frame"));
+			}
+		}
+
+		if dataframe.has_mask {
+			while dataframe.mask.len() < 4 {
+				let byte = reader.read_u8()?;
+				dataframe.mask.push(byte);
+			}
+		}
+
+		Ok(DataFrameHeader {
+			flags: dataframe.flags.unwrap(),
+			opcode: dataframe.opcode.unwrap(),
+			mask: if dataframe.has_mask {
+				let mut mask = [0; 4];
+				mask.clone_from_slice(&dataframe.mask[0..4]);
+				Some(mask)
+			} else {
+				None
+				},
+			len: dataframe.len.unwrap(),
+		})
 	};
 
-	Ok(DataFrameHeader {
-	       flags: flags,
-	       opcode: opcode,
-	       mask: mask,
-	       len: len,
-	   })
+	hashmap.remove(&uuid);
+
+	ret
 }
 
 #[cfg(all(feature = "nightly", test))]

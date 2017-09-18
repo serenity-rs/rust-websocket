@@ -23,6 +23,7 @@ use ws::dataframe::DataFrame as DataFrameTrait;
 use ws::message::Message as MessageTrait;
 use ws::util::header::read_header;
 use result::WebSocketError;
+use uuid::Uuid;
 
 /// Even though a websocket connection may look perfectly symmetrical
 /// in reality there are small differences between clients and servers.
@@ -98,7 +99,7 @@ impl<D> Decoder for DataFrameCodec<D> {
 			let mut reader = Cursor::new(src.as_ref());
 
 			// read header to get the size, bail if not enough
-			let header = match read_header(&mut reader) {
+			let header = match read_header(&mut reader, Uuid::nil()) {
 				Ok(head) => head,
 				Err(WebSocketError::NoDataAvailable) => return Ok(None),
 				Err(e) => return Err(e),
