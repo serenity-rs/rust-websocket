@@ -16,6 +16,28 @@ struct ReaderState {
 	len: Option<u64>,
 }
 
+impl ReaderState {
+	fn new() -> ReaderState {
+		ReaderState {
+			flags: None,
+			opcode: None,
+			has_mask: false,
+			mask: Vec::with_capacity(4),
+			len_byte: None,
+			len: None,
+		}
+	}
+
+	fn reset(&mut self) {
+		self.flags = None;
+		self.opcode = None;
+		self.has_mask = false;
+		self.mask = Vec::with_capacity(4);
+		self.len_byte = None;
+		self.len = None;
+	}
+}
+
 bitflags! {
 	/// Flags relevant to a WebSocket data frame.
 	pub struct DataFrameFlags: u8 {
@@ -90,14 +112,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 	let mut hashmap = STATE.write().unwrap();
 
 	let ret = {
-		let dataframe = hashmap.entry(uuid).or_insert(ReaderState {
-			flags: None,
-			opcode: None,
-			has_mask: false,
-			mask: Vec::with_capacity(4),
-			len_byte: None,
-			len: None,
-		});
+		let dataframe = hashmap.entry(uuid).or_insert(ReaderState::new());
 
 		if dataframe.flags.is_none() {
 			reader.read_u8().and_then(|byte| {
@@ -121,6 +136,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 				126 => {
 					let len = reader.read_u16::<BigEndian>()? as u64;
 					if len <= 125 {
+						dataframe.reset();
 						return Err(WebSocketError::DataFrameError("Invalid data frame length"));
 					}
 					len
@@ -128,6 +144,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 				127 => {
 					let len = reader.read_u64::<BigEndian>()?;
 					if len <= 65535 {
+						dataframe.reset();
 						return Err(WebSocketError::DataFrameError("Invalid data frame length"));
 					}
 					len
@@ -140,9 +157,11 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 
 		if dataframe.opcode.unwrap() >= 8 {
 			if dataframe.len.unwrap() >= 126 {
+				dataframe.reset();
 				return Err(WebSocketError::DataFrameError("Control frame length too long"));
 			}
 			if !dataframe.flags.unwrap().contains(FIN) {
+				dataframe.reset();
 				return Err(WebSocketError::ProtocolError("Illegal fragmented control frame"));
 			}
 		}
