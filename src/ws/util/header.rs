@@ -2,7 +2,7 @@
 
 use std::io::{Read, Write};
 use result::{WebSocketResult, WebSocketError};
-use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
+use byteorder::{BigEndian, ByteOrder, ReadBytesExt, WriteBytesExt};
 use uuid::Uuid;
 use std::collections::HashMap;
 use std::sync::RwLock;
@@ -12,6 +12,7 @@ struct ReaderState {
 	opcode: Option<u8>,
 	has_mask: bool,
 	mask: Vec<u8>,
+	raw_len: Vec<u8>,
 	len_byte: Option<u8>,
 	len: Option<u64>,
 }
@@ -23,6 +24,7 @@ impl ReaderState {
 			opcode: None,
 			has_mask: false,
 			mask: Vec::with_capacity(4),
+			raw_len: Vec::with_capacity(8),
 			len_byte: None,
 			len: None,
 		}
@@ -33,6 +35,7 @@ impl ReaderState {
 		self.opcode = None;
 		self.has_mask = false;
 		self.mask = Vec::with_capacity(4);
+		self.raw_len = Vec::with_capacity(8);
 		self.len_byte = None;
 		self.len = None;
 	}
@@ -139,7 +142,12 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 			let len = match byte & 0x7F {
 				0...125 => (byte & 0x7F) as u64,
 				126 => {
-					let len = reader.read_u16::<BigEndian>()? as u64;
+					while dataframe.raw_len.len() < 2 {
+						let byte = reader.read_u8()?;
+						dataframe.raw_len.push(byte);
+					}
+
+					let len = BigEndian::read_u16(&mut dataframe.raw_len) as u64;
 					if len <= 125 {
 						dataframe.reset();
 						return Err(WebSocketError::DataFrameError("Invalid data frame length"));
@@ -147,7 +155,12 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 					len
 				}
 				127 => {
-					let len = reader.read_u64::<BigEndian>()?;
+					while dataframe.raw_len.len() < 8 {
+						let byte = reader.read_u8()?;
+						dataframe.raw_len.push(byte);
+					}
+
+					let len = BigEndian::read_u64(&mut dataframe.raw_len);
 					if len <= 65535 {
 						dataframe.reset();
 						return Err(WebSocketError::DataFrameError("Invalid data frame length"));
