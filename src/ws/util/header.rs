@@ -112,8 +112,10 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 	let mut hashmap = STATE.write().unwrap();
 
 	let ret = {
+		//	Get a previous state if it exists, or start a new state.
 		let dataframe = hashmap.entry(uuid).or_insert(ReaderState::new());
 
+		//	If the flag entry is None, then read the first byte of the header
 		if dataframe.flags.is_none() {
 			reader.read_u8().and_then(|byte| {
 				dataframe.flags = Some(DataFrameFlags::from_bits_truncate(byte));
@@ -122,6 +124,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 			})?;
 		}
 
+		//	Save the length byte separate since it is needed if getting the length fails
 		dataframe.len_byte = match reader.read_u8() {
 			Ok(byte) => Some(byte),
 			Err(why) => return Err(WebSocketError::IoError(why)),
@@ -130,6 +133,8 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 		let byte = dataframe.len_byte.unwrap();
 		dataframe.has_mask = byte & 0x80 == 0x80;
 
+		//	Using the length byte, determine the length of the payload
+		//	TODO: Check if `read_u16` or `read_u64` will corrupt the state if they fail.
 		if dataframe.len.is_none() {
 			let len = match byte & 0x7F {
 				0...125 => (byte & 0x7F) as u64,
@@ -155,6 +160,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 			dataframe.len = Some(len);
 		}
 
+		//	Check for invalid state
 		if dataframe.opcode.unwrap() >= 8 {
 			if dataframe.len.unwrap() >= 126 {
 				dataframe.reset();
@@ -166,6 +172,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 			}
 		}
 
+		//	Get the mask if one exists, making sure to have exactly 4 bytes
 		if dataframe.has_mask {
 			while dataframe.mask.len() < 4 {
 				let byte = reader.read_u8()?;
@@ -173,6 +180,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 			}
 		}
 
+		//	Return the final state
 		Ok(DataFrameHeader {
 			flags: dataframe.flags.unwrap(),
 			opcode: dataframe.opcode.unwrap(),
@@ -187,6 +195,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 		})
 	};
 
+	//	Remove the entry from the map
 	hashmap.remove(&uuid);
 
 	ret
