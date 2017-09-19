@@ -9,6 +9,7 @@ use std::sync::RwLock;
 use uuid::Uuid;
 use std::collections::HashMap;
 
+#[derive(Debug)]
 struct ReaderState {
 	header: Option<DataFrameHeader>,
 	packet: Vec<u8>,
@@ -121,7 +122,9 @@ impl DataFrame {
 			if let Err(why) = reader.take(state.header.unwrap().len - len as u64).read_to_end(&mut data) {
 				// Could not read entire packet at once
 				// Store what we got and return the error.
+				debug!("Read failure, read {} bytes", data.len());
 				state.packet.append(&mut data);
+				debug!("Current packet size: {} / {}", state.packet.len(), state.header.unwrap().len);
 				return Err(WebSocketError::IoError(why));
 			};
 
@@ -132,6 +135,8 @@ impl DataFrame {
 			if (state.packet.len() as u64) < state.header.unwrap().len {
 				return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "incomplete payload").into());
 			}
+
+			debug!("WS Data: {:?}", state);
 
 			DataFrame::read_dataframe_body(state.header.unwrap(), state.packet.clone(), should_be_masked)
 		};
