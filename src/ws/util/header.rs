@@ -137,11 +137,11 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 		dataframe.has_mask = byte & 0x80 == 0x80;
 
 		//	Using the length byte, determine the length of the payload
-		//	TODO: Check if `read_u16` or `read_u64` will corrupt the state if they fail.
 		if dataframe.len.is_none() {
 			let len = match byte & 0x7F {
 				0...125 => (byte & 0x7F) as u64,
 				126 => {
+					//	Make sure 2 bytes are available for read_u16
 					while dataframe.raw_len.len() < 2 {
 						let byte = reader.read_u8()?;
 						dataframe.raw_len.push(byte);
@@ -155,6 +155,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 					len
 				}
 				127 => {
+					//	Make sure 8 bytes are available for read_u64
 					while dataframe.raw_len.len() < 8 {
 						let byte = reader.read_u8()?;
 						dataframe.raw_len.push(byte);
