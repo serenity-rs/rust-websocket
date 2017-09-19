@@ -111,20 +111,22 @@ impl DataFrame {
 				state.header = Some(dfh::read_header(reader, uuid)?);
 			}
 
+			let header = state.header.unwrap();
+
 			//	If this is a new packet, allocate space for it.
-			if state.packet.capacity() != state.header.unwrap().len as usize {
-				state.packet = Vec::with_capacity(state.header.unwrap().len as usize);
+			if state.packet.capacity() != header.len as usize {
+				state.packet = Vec::with_capacity(header.len as usize);
 			}
 
 			let len = state.packet.len();
 			let mut data = Vec::new();
 
-			if let Err(why) = reader.take(state.header.unwrap().len - len as u64).read_to_end(&mut data) {
+			if let Err(why) = reader.take(header.len - len as u64).read_to_end(&mut data) {
 				// Could not read entire packet at once
 				// Store what we got and return the error.
 				debug!("Read failure, read {} bytes", data.len());
 				state.packet.append(&mut data);
-				debug!("Current packet size: {} / {}", state.packet.len(), state.header.unwrap().len);
+				debug!("Current packet size: {} / {}", state.packet.len(), header.len);
 				return Err(WebSocketError::IoError(why));
 			};
 
@@ -132,13 +134,13 @@ impl DataFrame {
 			state.packet.append(&mut data);
 
 			//	If there's still not enough data, then something is wrong.
-			if (state.packet.len() as u64) < state.header.unwrap().len {
+			if (state.packet.len() as u64) < header.len {
 				return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "incomplete payload").into());
 			}
 
 			debug!("WS Data: {:?}", state);
 
-			DataFrame::read_dataframe_body(state.header.unwrap(), state.packet.clone(), should_be_masked)
+			DataFrame::read_dataframe_body(header, state.packet.clone(), should_be_masked)
 		};
 
 		// This is the end, so reset the header and packet states.
