@@ -135,10 +135,14 @@ impl DataFrame {
 
 			//	If there's still not enough data, then something is wrong.
 			if (state.packet.len() as u64) < header.len {
+				debug!("Incomplete packet: {} / {}", state.packet.len(), header.len);
 				return Err(io::Error::new(io::ErrorKind::UnexpectedEof, "incomplete payload").into());
 			}
 
-			debug!("WS Data: {:?}", state);
+			match String::from_utf8(state.packet.clone()) {
+				Ok(payload) => trace!("WSData: {:?} - {}", state.header, payload),
+				Err(_) => trace!("WS Data: {:?}", state),
+			}
 
 			DataFrame::read_dataframe_body(header, state.packet.clone(), should_be_masked)
 		};

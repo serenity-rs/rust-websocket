@@ -130,7 +130,10 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 		//	Save the length byte separate since it is needed if getting the length fails
 		dataframe.len_byte = match reader.read_u8() {
 			Ok(byte) => Some(byte),
-			Err(why) => return Err(WebSocketError::IoError(why)),
+			Err(why) => {
+				debug!("Could not read length: {:?}", why);
+				return Err(WebSocketError::IoError(why))
+			}
 		};
 		
 		let byte = dataframe.len_byte.unwrap();
@@ -143,7 +146,13 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 				126 => {
 					//	Make sure 2 bytes are available for read_u16
 					while dataframe.raw_len.len() < 2 {
-						let byte = reader.read_u8()?;
+						let byte = match reader.read_u8() {
+							Ok(byte) => byte,
+							Err(why) => {
+								debug!("Could not read u16 length byte: {:?}", why);
+								return Err(WebSocketError::IoError(why));
+							}
+						};
 						dataframe.raw_len.push(byte);
 					}
 
@@ -157,7 +166,13 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 				127 => {
 					//	Make sure 8 bytes are available for read_u64
 					while dataframe.raw_len.len() < 8 {
-						let byte = reader.read_u8()?;
+						let byte = match reader.read_u8() {
+							Ok(byte) => byte,
+							Err(why) => {
+								debug!("Could not read u64 length byte: {:?}", why);
+								return Err(WebSocketError::IoError(why));
+							}
+						};
 						dataframe.raw_len.push(byte);
 					}
 
@@ -189,7 +204,13 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 		//	Get the mask if one exists, making sure to have exactly 4 bytes
 		if dataframe.has_mask {
 			while dataframe.mask.len() < 4 {
-				let byte = reader.read_u8()?;
+				let byte = match reader.read_u8() {
+					Ok(byte) => byte,
+					Err(why) => {
+						debug!("Could not read mask byte: {:?}", why);
+						return Err(WebSocketError::IoError(why));
+					}
+				};
 				dataframe.mask.push(byte);
 			}
 		}
