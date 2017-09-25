@@ -1,7 +1,12 @@
 [package]
 name = "evzht9h3nznqzwl"
 version = "0.0.1"
-authors = []
+authors = [
+    "acdenisSK <acdenissk69@gmail.com>",
+    "Maiddog <maiddogsrl@gmail.com",
+    "Zeyla Hellyer <zey@zey.moe>",
+]
+description = "A temporary fork."
 documentation = "http://docs.rs/evzht9h3nznqzwl"
 homepage = "https://github.com/serenity-rs/rust-websocket"
 repository = "https://github.com/serenity-rs/rust-websocket.git"
