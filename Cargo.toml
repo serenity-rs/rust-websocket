@@ -21,7 +21,6 @@ rand = "0.3"
 byteorder = "1.0"
 sha1 = "0.2"
 base64 = "0.6"
-lazy_static = "0.2"
 log = "0.3"
 uuid = { version = "0.5", features = ["v4"] }
 futures = { version = "0.1", optional = true }

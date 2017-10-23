@@ -11,9 +11,30 @@ use result::{WebSocketResult, WebSocketError};
 use ws;
 use ws::receiver::Receiver as ReceiverTrait;
 use ws::receiver::{MessageIterator, DataFrameIterator};
+use ws::util::header::{DataFrameHeader, ReaderState};
 use message::OwnedMessage;
 use stream::sync::{AsTcpStream, Stream};
 pub use stream::sync::Shutdown;
+
+#[derive(Debug, Default)]
+/// A state for a reader to contain a buffer for incomplete reads to recover.
+pub struct PacketState {
+	/// The header of the dataframe.
+	pub header: Option<DataFrameHeader>,
+	/// The buffer of the packet to recover from.
+	pub packet: Vec<u8>,
+}
+
+impl PacketState {
+	/// Resets this state, setting [`header`] to `None` and clearing [`packet`].
+	///
+	/// [`header`]: #structfield.header
+	/// [`packet`]: #structfield.packet
+	pub fn reset(&mut self) {
+		self.header = None;
+		self.packet.clear();
+	}
+}
 
 /// This reader bundles an existing stream with a parsing algorithm.
 /// It is used by the client in its `.split()` function as the reading component.
@@ -75,6 +96,8 @@ impl<S> Reader<S>
 pub struct Receiver {
 	buffer: Vec<DataFrame>,
 	mask: bool,
+	packet_state: PacketState,
+	reader_state: ReaderState,
 	uuid: Uuid,
 }
 
@@ -84,6 +107,8 @@ impl Receiver {
 		Receiver {
 			buffer: Vec::new(),
 			mask: mask,
+			packet_state: PacketState::default(),
+			reader_state: ReaderState::new(),
 			uuid: uuid,
 		}
 	}
@@ -103,7 +128,13 @@ impl ws::Receiver for Receiver {
 	fn recv_dataframe<R>(&mut self, reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrame>
 		where R: Read
 	{
-		DataFrame::read_dataframe(reader, self.mask, uuid)
+		DataFrame::read_dataframe(
+			reader,
+			self.mask,
+			uuid,
+			&mut self.packet_state,
+			&mut self.reader_state,
+		)
 	}
 
 	/// Returns the data frames that constitute one message.

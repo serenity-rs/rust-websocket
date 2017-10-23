@@ -23,7 +23,6 @@ use ws::dataframe::DataFrame as DataFrameTrait;
 use ws::message::Message as MessageTrait;
 use ws::util::header::read_header;
 use result::WebSocketError;
-use uuid::Uuid;
 
 /// Even though a websocket connection may look perfectly symmetrical
 /// in reality there are small differences between clients and servers.
@@ -60,6 +59,7 @@ pub enum Context {
 pub struct DataFrameCodec<D> {
 	is_server: bool,
 	frame_type: PhantomData<D>,
+	reader_state: ::ws::util::header::ReaderState,
 }
 
 impl DataFrameCodec<DataFrame> {
@@ -84,6 +84,7 @@ impl<D> DataFrameCodec<D> {
 		DataFrameCodec {
 			is_server: context == Context::Server,
 			frame_type: PhantomData,
+			reader_state: ::ws::util::header::ReaderState::new(),
 		}
 	}
 }
@@ -99,7 +100,7 @@ impl<D> Decoder for DataFrameCodec<D> {
 			let mut reader = Cursor::new(src.as_ref());
 
 			// read header to get the size, bail if not enough
-			let header = match read_header(&mut reader, Uuid::nil()) {
+			let header = match read_header(&mut reader, &mut self.reader_state) {
 				Ok(head) => head,
 				Err(WebSocketError::NoDataAvailable) => return Ok(None),
 				Err(e) => return Err(e),

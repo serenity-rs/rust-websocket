@@ -3,11 +3,9 @@
 use std::io::{Read, Write};
 use result::{WebSocketResult, WebSocketError};
 use byteorder::{BigEndian, ByteOrder, ReadBytesExt, WriteBytesExt};
-use uuid::Uuid;
-use std::collections::HashMap;
-use std::sync::RwLock;
 
-struct ReaderState {
+#[allow(missing_docs)]
+pub struct ReaderState {
 	flags: Option<DataFrameFlags>,
 	opcode: Option<u8>,
 	has_mask: bool,
@@ -18,7 +16,7 @@ struct ReaderState {
 }
 
 impl ReaderState {
-	fn new() -> ReaderState {
+	pub(crate) fn new() -> ReaderState {
 		ReaderState {
 			flags: None,
 			opcode: None,
@@ -104,20 +102,11 @@ pub fn write_header(writer: &mut Write, header: DataFrameHeader) -> WebSocketRes
 }
 
 /// Reads a data frame header.
-pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHeader>
-	where R: Read
-{
-	// If a read fails, these will store previous state so we can recover.
-	lazy_static! {
-		static ref STATE: RwLock<HashMap<Uuid, ReaderState>> = RwLock::new(HashMap::new());
-	}
-
-	let mut hashmap = STATE.write().unwrap();
-
+pub fn read_header<R>(
+	reader: &mut R,
+	dataframe: &mut ReaderState,
+) -> WebSocketResult<DataFrameHeader> where R: Read {
 	let ret = {
-		//	Get a previous state if it exists, or start a new state.
-		let dataframe = hashmap.entry(uuid).or_insert(ReaderState::new());
-
 		//	If the flag entry is None, then read the first byte of the header
 		if dataframe.flags.is_none() {
 			reader.read_u8().and_then(|byte| {
@@ -135,7 +124,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 				return Err(WebSocketError::IoError(why))
 			}
 		};
-		
+
 		let byte = dataframe.len_byte.unwrap();
 		dataframe.has_mask = byte & 0x80 == 0x80;
 
@@ -230,8 +219,7 @@ pub fn read_header<R>(reader: &mut R, uuid: Uuid) -> WebSocketResult<DataFrameHe
 		})
 	};
 
-	//	Remove the entry from the map
-	hashmap.remove(&uuid);
+	dataframe.reset();
 
 	ret
 }
