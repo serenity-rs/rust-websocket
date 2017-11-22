@@ -184,7 +184,7 @@ pub fn read_header<R>(
 				dataframe.reset();
 				return Err(WebSocketError::DataFrameError("Control frame length too long"));
 			}
-			if !dataframe.flags.unwrap().contains(FIN) {
+			if !dataframe.flags.unwrap().contains(DataFrameFlags::FIN) {
 				dataframe.reset();
 				return Err(WebSocketError::ProtocolError("Illegal fragmented control frame"));
 			}

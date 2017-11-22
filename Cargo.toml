@@ -15,12 +15,12 @@ license = "MIT"
 [dependencies]
 hyper = "^0.10.6"
 unicase = "1.0"
-url = "1.0"
-bitflags = "0.9"
+url = "^1.6"
+bitflags = "^1.0"
 rand = "0.3"
-byteorder = "1.0"
+byteorder = "^1.1"
 sha1 = "0.2"
-base64 = "0.6"
+base64 = "^0.8"
 log = "0.3"
 uuid = { version = "0.5", features = ["v4"] }
 futures = { version = "0.1", optional = true }

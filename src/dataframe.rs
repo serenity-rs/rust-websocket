@@ -3,7 +3,7 @@ use std::io::{self, Read, Write};
 use result::{WebSocketResult, WebSocketError};
 use ws::dataframe::DataFrame as DataFrameable;
 use ws::util::header::DataFrameHeader;
-use ws::util::header::{self as dfh, ReaderState};
+use ws::util::header::{self as dfh, DataFrameFlags, ReaderState};
 use ws::util::mask;
 use uuid::Uuid;
 use ::receiver::PacketState;
@@ -48,12 +48,12 @@ impl DataFrame {
 		body: Vec<u8>,
 		should_be_masked: bool,
 	) -> WebSocketResult<Self> {
-		let finished = header.flags.contains(dfh::FIN);
+		let finished = header.flags.contains(DataFrameFlags::FIN);
 
 		let reserved = [
-			header.flags.contains(dfh::RSV1),
-			header.flags.contains(dfh::RSV2),
-			header.flags.contains(dfh::RSV3),
+			header.flags.contains(DataFrameFlags::RSV1),
+			header.flags.contains(DataFrameFlags::RSV2),
+			header.flags.contains(DataFrameFlags::RSV3),
 		];
 
 		let opcode = Opcode::new(header.opcode).expect("Invalid header opcode!");

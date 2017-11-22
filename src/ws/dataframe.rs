@@ -4,7 +4,7 @@
 //! own needs, and be able to use custom dataframes quickly
 use std::io::Write;
 use result::WebSocketResult;
-use ws::util::header as dfh;
+use ws::util::header::{self as dfh, DataFrameFlags};
 use ws::util::mask::Masker;
 use ws::util::mask;
 
@@ -51,20 +51,20 @@ pub trait DataFrame {
 
 	/// Writes a DataFrame to a Writer.
 	fn write_to(&self, writer: &mut Write, mask: bool) -> WebSocketResult<()> {
-		let mut flags = dfh::DataFrameFlags::empty();
+		let mut flags = DataFrameFlags::empty();
 		if self.is_last() {
-			flags.insert(dfh::FIN);
+			flags.insert(DataFrameFlags::FIN);
 		}
 		{
 			let reserved = self.reserved();
 			if reserved[0] {
-				flags.insert(dfh::RSV1);
+				flags.insert(DataFrameFlags::RSV1);
 			}
 			if reserved[1] {
-				flags.insert(dfh::RSV2);
+				flags.insert(DataFrameFlags::RSV2);
 			}
 			if reserved[2] {
-				flags.insert(dfh::RSV3);
+				flags.insert(DataFrameFlags::RSV3);
 			}
 		}
 
