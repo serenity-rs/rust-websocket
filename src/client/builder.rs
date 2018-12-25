@@ -49,8 +49,6 @@ mod async_imports {
 	pub use futures::future;
 	pub use futures::Stream as FutureStream;
 	pub use codec::ws::{MessageCodec, Context};
-	#[cfg(feature="async-ssl")]
-	pub use tokio_tls::TlsConnectorExt;
 }
 #[cfg(feature="async")]
 use self::async_imports::*;
@@ -563,9 +561,11 @@ impl<'u> ClientBuilder<'u> {
 			// secure connection, wrap with ssl
 			let future = tcp_stream.map_err(|e| e.into())
 			                       .and_then(move |s| {
-				                                 connector.connect_async(&host, s)
-				                                          .map_err(|e| e.into())
-				                                })
+										let connector = tokio_tls::TlsConnector::from(connector);
+
+										connector.connect(&host, s)
+											.map_err(|e| e.into())
+                                   })
 			                       .and_then(move |stream| {
 				let stream: Box<stream::async::Stream + Send> = Box::new(stream);
 				builder.async_connect_on(stream)
@@ -649,9 +649,11 @@ impl<'u> ClientBuilder<'u> {
 		let future =
 			tcp_stream.map_err(|e| e.into())
 			          .and_then(move |s| {
-				                    connector.connect_async(&host, s)
-				                             .map_err(|e| e.into())
-				                   })
+							let connector = tokio_tls::TlsConnector::from(connector);
+
+						  	connector.connect(&host, s)
+								.map_err(|e| e.into())
+					  })
 			          .and_then(move |stream| builder.async_connect_on(stream));
 		Box::new(future)
 	}
@@ -926,7 +928,7 @@ impl<'u> ClientBuilder<'u> {
 		};
 		let connector = match connector {
 			Some(c) => c,
-			None => TlsConnector::builder()?.build()?,
+			None => TlsConnector::builder().build()?,
 		};
 		Ok((host, connector))
 	}
