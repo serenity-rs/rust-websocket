@@ -13,7 +13,7 @@ pub use tokio_core::reactor::Handle;
 #[cfg(any(feature="async-ssl"))]
 use native_tls::TlsAcceptor;
 #[cfg(any(feature="async-ssl"))]
-use tokio_tls::{TlsAcceptorExt, TlsStream};
+use tokio_tls::TlsStream;
 
 /// The asynchronous specialization of a websocket server.
 /// Use this struct to create asynchronous servers.
@@ -110,6 +110,8 @@ impl WsServer<TlsAcceptor, TcpListener> {
 	/// example for a good echo server example.
 	pub fn incoming(self) -> Incoming<TlsStream<TcpStream>> {
 		let acceptor = self.ssl_acceptor;
+		let acceptor = tokio_tls::TlsAcceptor::from(acceptor);
+
 		let future = self.listener
 		                 .incoming()
 		                 .map_err(|e| {
@@ -121,7 +123,7 @@ impl WsServer<TlsAcceptor, TcpListener> {
 			                          }
 			                         })
 		                 .and_then(move |(stream, a)| {
-			acceptor.accept_async(stream)
+			acceptor.accept(stream)
 			        .map_err(|e| {
 				InvalidConnection {
 					stream: None,
